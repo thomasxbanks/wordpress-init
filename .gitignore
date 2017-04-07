@@ -1,0 +1,19 @@
+# Blacklist WordPress core
+_www/wp-admin/*
+_www/wp-includes/*
+_www/*.php
+_www/*.txt
+_www/*.html
+
+# Blacklist all wp-content except themes
+_www/wp-content/languages/*
+_www/wp-content/plugins/*
+_www/wp-content/upgrade/*
+_www/wp-content/uploads/*
+_www/wp-content/index.php
+
+# Blacklist installation files
+node_modules/*
+package.json
+mysql.js
+README.md
