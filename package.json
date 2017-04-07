@@ -1,0 +1,48 @@
+{
+    "name": "stm-wordpress-boilerplate",
+    "version": "0.1.0",
+    "description": "WordPress Boilerplate installation",
+    "main": "index.js",
+    "config": {
+        "uri": "projectname.local",
+        "db": "db_projectname",
+        "themename": "themename",
+        "themeuri": "https://thomasbanks@bitbucket.org/shootthemoon/stm-boilerplate-themetest.git",
+        "repouser": "thomasxbanks",
+        "repoconfig": "{\"name\":\"reponame\"}",
+        "repouri": "reponame.git"
+    },
+    "scripts": {
+        "init": "curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && chmod +x wp-cli.phar && sudo mv wp-cli.phar /usr/local/bin/wp && echo 'wp-cli installed' && npm i && echo 'npm packages installed'",
+
+        "start": "npm run mk-db && npm run wp && npm run git && npm run load-gulp && npm run boot-server",
+        "wp": "npm run get-wp && npm run get-theme && npm run mk-config && npm run install-wp && npm run set-theme",
+        "git": "npm run git-kill && npm run git-start",
+
+        "mk-db": "npm i && node mysql.js",
+
+        "get-wp": "mkdir _www && cd $_ && wp core download && cd -",
+        "get-theme": "rm -rf _www/wp-content/themes/** && git clone $npm_package_config_themeuri ./_www/wp-content/themes/$npm_package_config_themename/ && echo 'Theme Downloaded'",
+        "mk-config": "wp core config --path=_www --dbname=$npm_package_config_db --dbuser=root --dbpass=root --dbhost=127.0.0.1 --dbprefix=wp_",
+        "install-wp": "wp core install --path=_www --url=$npm_package_config_uri  --title=\"WordPress Website Title\" --admin_user=admin --admin_password=password --admin_email=\"digital@shoot-the-moon.co.uk\"",
+
+        "set-theme": "wp theme activate $npm_package_config_themename --path=_www",
+
+        "git-kill": "find . -type d -iname .git | xargs rm -rf",
+        "git-create": "git init && curl -u $npm_package_config_repouser https://api.github.com/user/repos -d $npm_package_config_repoconfig",
+        "git-origin": "git remote add origin https://github.com/$npm_package_config_repouser/$npm_package_config_repouri",
+        "git-commit": "git add . && git commit -m \"initial commit\" && git push -u origin master",
+        "git-start": "npm run git-create && npm run git-origin && npm run git-commit",
+
+        "load-gulp": "cd ./_www/wp-content/themes/$npm_package_config_themename/src && npm i && echo 'Dependencies installed'",
+
+        "boot-server": "cd _www && wp server & open http://localhost:8080",
+
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "shoot-the-moon",
+    "license": "ISC",
+    "devDependencies": {
+        "mysql": "^2.13.0"
+    }
+}
